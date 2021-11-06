@@ -21,7 +21,7 @@ data_clean = data.drop(index="Order ID")
 print(data_clean.columns)
 
 # HANDLE MISSING DATA
-data_clean.fillna(0)
+data_clean.fillna('')
 
 # CHANGE TYPE OF DATA COLUMNS
 data_clean['Quantity Ordered'] = pd.to_numeric(data_clean['Quantity Ordered'])
@@ -44,16 +44,32 @@ data_clean['Sale'] = data_clean['Quantity Ordered'] * data_clean['Price Each']
 # SALE OF EACH MONTH
 monthly_sale = data_clean.groupby('Month').sum()
 
-with pd.option_context('display.max_columns', None):  # more options can be specified also
-    print(data_clean)
 
 # PLOT MONTHLY SALES
 plt.bar(months, monthly_sale['Sale'])
 plt.xticks(months)
 plt.ylabel('Sales in USD')
 plt.xlabel('Month number')
-plt.show()
+# plt.show()
+
+### WHAT CITY HAD THE HIGHEST NUMBER OF SALES
+# SPLIT ADDRESS INTO SMALLER INFO
+city_list = []
+for address in data_clean['Purchase Address']:
+    city = str(address).split(',')
+    if len(city) < 3:
+        city_list.append('')
+    else:
+        city_list.append(city[1])
 
 
+# CREATE A CITY COLUMN
+data_clean['City'] = city_list
+
+# GET SALE BY CITY
+city_sales = data_clean.groupby('City').sum()
+print(city_sales)
 
 
+with pd.option_context('display.max_columns', None):  # more options can be specified also
+    print(data_clean)
