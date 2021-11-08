@@ -46,10 +46,10 @@ monthly_sale = data_clean.groupby('Month').sum()
 
 
 # PLOT MONTHLY SALES
-plt.bar(months, monthly_sale['Sale'])
-plt.xticks(months)
-plt.ylabel('Sales in USD')
-plt.xlabel('Month number')
+# plt.bar(months, monthly_sale['Sale'])
+# plt.xticks(months)
+# plt.ylabel('Sales in USD')
+# plt.xlabel('Month number')
 # plt.show()
 
 ### WHAT CITY HAD THE HIGHEST NUMBER OF SALES
@@ -68,8 +68,24 @@ data_clean['City'] = city_list
 
 # GET SALE BY CITY
 city_sales = data_clean.groupby('City').sum()
-print(city_sales)
+# print(city_sales)
+
+# PLOT City SALES
+cities = [city for city, Dataframe in data_clean.groupby('City')]
+plt.bar(cities, city_sales['Sale'])
+plt.xticks(cities, rotation='vertical', size=8)
+plt.ylabel('Sales in USD')
+plt.xlabel('City name')
+# plt.show()
+
+### BEST TIME FOR AD DISPLAY TO MAXIMIZE PRODUCT PURCHASE RATE
+# CONVERT ORDER DATE COL TO A DATE_TIME PYTHON'S FORMAT
+data_clean['Order Date'] = pd.to_datetime(data_clean['Order Date'])
+
+data_clean['Hour'] = data_clean['Order Date'].dt.hour
+data_clean['Minute'] = data_clean['Order Date'].dt.minute
 
 
 with pd.option_context('display.max_columns', None):  # more options can be specified also
     print(data_clean)
+
