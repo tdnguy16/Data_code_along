@@ -1,5 +1,7 @@
 import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
+from itertools import combinations
+from collections import Counter
 import matplotlib.pyplot as plt
 
 
@@ -13,10 +15,9 @@ for month in months:
     data_lists.append(month)
 
 data = pd.concat(data_lists)
-data.set_index("Order ID", inplace = True)
 
 # CLEAN HEADERS FROM DIFFERENT CSV FILES
-data_clean = data.drop(index="Order ID")
+data_clean = data[data['Order ID'] != "Order ID"]
 
 print(data_clean.columns)
 
@@ -91,7 +92,24 @@ city_sales = data_clean.groupby('City').sum()
 # plt.grid()
 # plt.show()
 
-# PRINT THE WHOLE DATAFRAME
-with pd.option_context('display.max_columns', None):  # more options can be specified also
-    print(data_clean)
+### WHAT ITEMS ARE USUALLY SOLD TOGETHER
+# Find all duplicated Order ID
+multi_item_order = data_clean[data_clean.duplicated(['Order ID'], keep=False)]
 
+# Group orders by Order ID
+y = multi_item_order.groupby('Order ID')
+
+# Combine products of the same order
+z = y['Product'].apply(lambda x: ','.join(x))
+
+# # Count unique pairs of products into a dict
+count = Counter()
+for sublist in z.values:
+    sublist_list = sublist.split(',')
+    count.update(Counter(combinations(sublist_list, 2)))
+print(len(count))
+print(count)
+
+### PRINT THE WHOLE DATAFRAME
+# with pd.option_context('display.max_columns', None):  # more options can be specified also
+#     print(data_clean)
