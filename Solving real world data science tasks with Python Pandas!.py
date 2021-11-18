@@ -107,6 +107,9 @@ count = Counter()
 for sublist in z.values:
     sublist_list = sublist.split(',')
     count.update(Counter(combinations(sublist_list, 2)))
+    count.update(Counter(combinations(sublist_list, 3)))
+    count.update(Counter(combinations(sublist_list, 4)))
+    count.update(Counter(combinations(sublist_list, 5)))
 print(len(count))
 print(count)
 
